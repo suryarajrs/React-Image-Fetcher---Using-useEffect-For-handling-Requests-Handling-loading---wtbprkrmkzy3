@@ -1,33 +1,38 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import '../styles/App.css';
 import { Loader } from './Loader';
 import { PhotoFrame } from './PhotoFrame';
 const App = () => {
 
-    // const [id , setid]=useState();
+    const [id , setid]=useState('');
     const [data , setdata]=useState("");
     const [loading , setloading] = useState(false);
+
+    useEffect(() =>{
+
+
+        if(id){
+            setloading(true);
+            fetch(`https://jsonplaceholder.typicode.com/photos/${id}`)
+            .then((response) => response.json())
+            .then((data) => {
+                setdata(data);
+              setloading(false);
+            })
+            .catch((error) => {
+              console.error('Error fetching photo data:', error);
+              setloading(false);
+            });
+            
+        }
+    },[id])
 
 
   const handleOnchange = async (e)=>{
     
-    const id = e.target.value;
+    setid(e.target.value);
 
-    if(id){
-        setdata("")
-        setloading(true);
-    }
-    try{
-
-        const responce  =  await fetch(`https://jsonplaceholder.typicode.com/photos/${id}`)
     
-        const results = await responce.json();
-        setdata(results)
-        setloading(false)
-    }catch(error){
-        console.log(error)
-        setloading(false)   
-    }
   }
   
     return(
